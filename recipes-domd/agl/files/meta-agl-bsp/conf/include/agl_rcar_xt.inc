@@ -63,5 +63,5 @@ BBMASK .= "|meta-audio-4a-framework/recipes-multimedia/pulseaudio/pulseaudio_%.b
 # Provide own ALSA configuration
 BBMASK .= "|meta-rcar-gen3/recipes-bsp/alsa-state/alsa-state.bbappend"
 
-
+BB_DANGLINGAPPENDS_WARNONLY = "yes"
 OSTREE_BOOTLOADER ?= "u-boot"
