@@ -2,7 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 
 # we need MACHINEOVERRIDES from DomD build
-do_configure[depends] += "domd-image-weston:do_domd_install_machine_overrides"
+do_configure[depends] += "domd-agl-demo-platform:do_domd_install_machine_overrides"
 
 XT_BB_LAYERS_FILE = "meta-xt-prod-extra/doc/bblayers.conf.domu-image-android"
 XT_BB_LOCAL_CONF_FILE = "meta-xt-prod-extra/doc/local.conf.domu-image-android"

@@ -1,7 +1,10 @@
 SRCREV = "${AUTOREV}"
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+
 SRC_URI_append = " \
-    repo://git@gitpct.epam.com/epmd-aepr/android_manifest.git;protocol=ssh;branch=android-9.0.0_r3-ED4991288-xt0.1;manifest=doma.xml;scmdata=keep \
+    repo://github.com/xen-troops/android_manifest;protocol=https;branch=android-9.0.0_r3-xt0.2;manifest=doma.xml;scmdata=keep \
+    file://0001-Work-around-b-70221552.patch;patchdir=frameworks/base \
 "
 
 # put it out of the source tree, so it can be reused after cleanup
@@ -17,6 +20,7 @@ EXTRA_OEMAKE_append = " \
 
 ANDROID_KERNEL_NAME ?= "kernel"
 ANDROID_UNPACKED_KERNEL_NAME ?= "vmlinux"
+PATCHTOOL = "git"
 
 ################################################################################
 # Renesas R-Car
@@ -43,21 +47,34 @@ ANDROID_PRODUCT_rcar = "xenvm"
 do_install[nostamp] = "1"
 do_install() {
     install -d "${DEPLOY_DIR_IMAGE}"
-
-    # uncompress lz4 packed kernel
-    lz4 -d "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}"
-    # copy uncompressed kernel to shared folder, so Dom0 can pick it up
     install -d "${XT_DIR_ABS_SHARED_BOOT_DOMA}"
-    install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}"
-    ln -sfr "${XT_DIR_ABS_SHARED_BOOT_DOMA}/${ANDROID_UNPACKED_KERNEL_NAME}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}/Image"
+
+    if [ -z ${TARGET_PREBUILT_KERNEL} ];then
+        local FILE_TYPE=$(file ${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME} -b | awk '{ print $1 }')
+        if [ ${FILE_TYPE} == "LZ4" ];then
+            # uncompress lz4 packed kernel
+            lz4 -d "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}"
+        else
+            ln -sfr "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}"
+        fi
+        # copy kernel to shared folder, so Dom0 can pick it up
+        install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}"
+
+        # copy kernel to the deploy directory
+        install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}"
+        install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}"
+        find ${ANDROID_PRODUCT_OUT}obj/KERNEL_OBJ -iname "vmlinux" -exec tar -cJvf ${DEPLOY_DIR_IMAGE}/vmlinux.tar.xz {} \; || true
+    else
+        # copy uncompressed kernel to shared folder, so Dom0 can pick it up
+        install -m 0744 "${TARGET_PREBUILT_KERNEL}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}"
+        # copy kernel to the deploy directory
+        install -m 0744 "${TARGET_PREBUILT_KERNEL}" "${DEPLOY_DIR_IMAGE}"
+    fi
 
     # copy images to the deploy directory
     find "${ANDROID_PRODUCT_OUT}/" -maxdepth 1 -iname '*.img' -exec \
         cp -f --no-dereference --preserve=links {} "${DEPLOY_DIR_IMAGE}" \;
-    # and the kernel as well
-    install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}"
-    install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}"
     ln -sfr "${DEPLOY_DIR_IMAGE}/${ANDROID_UNPACKED_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}/Image"
-    find ${ANDROID_PRODUCT_OUT}obj/KERNEL_OBJ -iname "vmlinux" -exec tar -cJvf ${DEPLOY_DIR_IMAGE}/vmlinux.tar.xz {} \; || true
+    ln -sfr "${XT_DIR_ABS_SHARED_BOOT_DOMA}/${ANDROID_UNPACKED_KERNEL_NAME}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}/Image"
 }
 

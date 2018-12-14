@@ -13,8 +13,8 @@ usage()
 	echo "`basename "$0"` <-p image-folder> <-d image-file> [-s image-size-gb] [-u dom0|domd|doma]"
 	echo "	-p image-folder	Base daily build folder where artifacts live"
 	echo "	-d image-file	Output image file or physical device"
-	echo "	-s image-size	Optional, image size in GB"
-	echo "  -u domain	Optional, unpack the domain specified"
+	echo "	-s image-size	Optional, image size in GiB"
+	echo "	-u domain	Optional, unpack the domain specified"
 
 	exit 1
 }
@@ -43,7 +43,7 @@ inflate_image()
 		return 0
 	fi
 
-	echo "Inflating image file at $dev of size ${size_gb}GB"
+	echo "Inflating image file at $dev of size ${size_gb}GiB"
 
 	local inflate=1
 	if [ -e $1 ] ; then
@@ -74,8 +74,8 @@ partition_image()
 	sudo parted -s $1 mklabel msdos || true
 
 	sudo parted -s $1 mkpart primary ext4 1MiB 257MiB || true
-	sudo parted -s $1 mkpart primary ext4 257MiB 2257MiB || true
-	sudo parted -s $1 mkpart primary 3415MiB 7838MiB || true
+	sudo parted -s $1 mkpart primary ext4 257MiB 4257MiB || true
+	sudo parted -s $1 mkpart primary 4257MiB 8680MiB || true
 	sudo parted $1 print
 	sudo partprobe $1
 
@@ -349,8 +349,6 @@ make_image()
 	loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
 	unpack_image $db_base_folder $loop_dev $img_output_file
 	# $loop_dev closed by unpack_image
-
-	print_step "Done"
 }
 
 unpack_domain()
@@ -388,8 +386,6 @@ unpack_domain()
 		;;
 	esac
 	sudo losetup -d $loop_dev
-	sync
-	print_step "Done"
 }
 
 print_step "Checking for simg2img"
@@ -428,10 +424,27 @@ if [ -z "${ARG_DEPLOY_DEV}" ]; then
 	usage
 fi
 
+# Check that deploy path contains dom0, domd and doma
+dom0_name=`ls ${ARG_DEPLOY_PATH} | grep dom0-image-thin` || true
+domd_name=`ls ${ARG_DEPLOY_PATH} | grep domd` || true
+doma_name=`ls ${ARG_DEPLOY_PATH} | grep android` || true
+if [ -z "$dom0_name" ]; then
+	echo "Error: deploy path has no dom0."
+	exit 2
+fi
+if [ -z "$domd_name" ]; then
+	echo "Error: deploy path has no domd."
+	exit 2
+fi
+if [ -z "$doma_name" ]; then
+	echo "Error: deploy path has no doma."
+	exit 2
+fi
+
 echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
 
-image_sg_gb=${ARG_IMG_SIZE_GB:-16}
+image_sg_gb=${ARG_IMG_SIZE_GB:-7}
 inflate_image $ARG_DEPLOY_DEV $image_sg_gb
 
 sudo losetup -P -f $ARG_DEPLOY_DEV
@@ -443,5 +456,7 @@ else
 	make_image $ARG_DEPLOY_PATH $loop_dev_in $ARG_IMG_SIZE_GB
 fi
 
+print_step "Syncing"
+sync
 sudo losetup -d $loop_dev_in
-echo "Done all steps"
+print_step "Done all steps"
