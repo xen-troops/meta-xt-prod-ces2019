@@ -1,22 +1,28 @@
-DEFAULT_SCREEN[transform]="270"
-DEFAULT_SCREEN[name]="HDMI-A-1"
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-WESTONSECTION[WESTONOUTPUT3]="output"
+# Remove KingFisher's setup
+SRC_URI_remove = "file://kingfisher_output.cfg"
 
-WESTONOUTPUT3[transform]="0"
-WESTONOUTPUT3[name]="HDMI-A-2"
+# Remove default rotation for HDMI-A-1 which is not needed for
+# Salvator-X M3
+SRC_URI_remove = "file://hdmi-a-1-270.cfg"
 
-WESTONSECTION[WESTONOUTPUT4]="output"
+SRC_URI_salvator-xs-h3-xt += "\
+    file://hdmi-a-1-on-270.cfg \
+    file://hdmi-2-on.cfg \
+    file://vga-1-off.cfg \
+    file://lvds-1-off.cfg \
+"
 
-WESTONOUTPUT4[name]="VGA-1"
+SRC_URI_salvator-x-h3-4x2g-xt += "\
+    file://hdmi-a-1-on-270.cfg \
+    file://hdmi-2-on.cfg \
+    file://vga-1-off.cfg \
+    file://lvds-1-off.cfg \
+"
 
-python () {
-    if "salvator-x-h3-xt" in d.getVar("MACHINEOVERRIDES", expand=True):
-        d.setVarFlag("WESTONOUTPUT4", "mode", "off")
-}
-
-python () {
-    if "salvator-x-m3-xt" in d.getVar("MACHINEOVERRIDES", expand=True):
-        d.setVarFlag("DEFAULT_SCREEN", "transform", "0")
-}
-
+SRC_URI_salvator-x-m3-xt += "\
+    file://hdmi-a-1-on.cfg \
+    file://vga-1-on.cfg \
+    file://lvds-1-off.cfg \
+"
