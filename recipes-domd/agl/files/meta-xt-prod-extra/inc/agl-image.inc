@@ -19,7 +19,6 @@ IMAGE_INSTALL_append = " \
     nftables \
     ntpdate-systemd \
     tzdata \
-    dhcp-client \
     xen-base \
     xen-flask \
     xen-xenstat \
