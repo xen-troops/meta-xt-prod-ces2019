@@ -10,7 +10,6 @@ IMAGE_INSTALL_append = " \
     guest-addons-bridge-config \
     kmscube \
     alsa-utils \
-    sensors-emulator \
 "
 
 #Add Xen and additional packages to build
