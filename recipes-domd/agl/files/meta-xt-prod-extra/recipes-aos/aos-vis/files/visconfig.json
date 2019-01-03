@@ -1,0 +1,22 @@
+{
+	"ServerURL": ":8088",
+	"VISCert": "/var/aos/vis/data/wwwivi.crt.pem",
+	"VISKey": "/var/aos/vis/data/wwwivi.key.pem",
+	"Adapters": [
+		{
+			"Plugin": "/usr/lib/aos/plugins/telemetryemulatoradapter.so",
+			"Params": {
+				"SensorURL": "http://localhost:8800"
+			}
+		},{
+			"Plugin": "/usr/lib/aos/plugins/storageadapter.so",
+			"Params": {
+				"Data" : {
+					"Attribute.Vehicle.VehicleIdentification.VIN": {"Value": "VIN", "Public": true, "ReadOnly": true},
+					"Attribute.Vehicle.UserIdentification.Users":  {"Value": ["USER"], "Public": true},
+					"Attribute.Car.Message":  {"Public": true}
+				}
+			}
+		}
+	]
+}
