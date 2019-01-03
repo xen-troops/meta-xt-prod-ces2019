@@ -9,7 +9,6 @@ IMAGE_INSTALL_append = " \
     kernel-modules \
     kmscube \
     optee-os \
-    sensors-emulator \
     displaymanager \
 "
 
