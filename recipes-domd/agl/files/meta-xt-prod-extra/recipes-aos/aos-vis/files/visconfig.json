@@ -4,12 +4,12 @@
 	"VISKey": "/var/aos/vis/data/wwwivi.key.pem",
 	"Adapters": [
 		{
-			"Plugin": "/usr/lib/aos/plugins/telemetryemulatoradapter.so",
+			"Plugin": "telemetryemulatoradapter",
 			"Params": {
 				"SensorURL": "http://localhost:8800"
 			}
 		},{
-			"Plugin": "/usr/lib/aos/plugins/storageadapter.so",
+			"Plugin": "storageadapter",
 			"Params": {
 				"Data" : {
 					"Attribute.Vehicle.VehicleIdentification.VIN": {"Value": "VIN", "Public": true, "ReadOnly": true},
