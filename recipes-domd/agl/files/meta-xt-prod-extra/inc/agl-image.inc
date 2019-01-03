@@ -10,6 +10,8 @@ IMAGE_INSTALL_append = " \
     guest-addons-bridge-config \
     kmscube \
     alsa-utils \
+    aos-vis \
+    telemetry-emulator \
 "
 
 #Add Xen and additional packages to build

@@ -16,6 +16,8 @@ XT_QUIRK_UNPACK_SRC_URI += "file://meta-agl;subdir=repo"
 XT_QUIRK_UNPACK_SRC_URI += "file://meta-agl-bsp;subdir=repo/meta-agl"
 
 # these layers will be added to bblayers.conf on do_configure
+XT_QUIRK_BB_ADD_LAYER += "meta-golang"
+XT_QUIRK_BB_ADD_LAYER += "meta-aos"
 XT_QUIRK_BB_ADD_LAYER += "meta-xt-prod-extra"
 
 # Override revision of AGL auxiliary layers
@@ -40,9 +42,12 @@ python do_domd_install_machine_overrides() {
 ################################################################################
 SRCREV_agl-repo = "${AUTOREV}"
 SRCREV_img-proprietary = "${AUTOREV}"
+SRCREV_metago = "${AUTOREV}"
 
 SRC_URI_rcar = "repo://gerrit.automotivelinux.org/gerrit/AGL/AGL-repo;protocol=https;branch=flounder;manifest=flounder_6.0.2.xml;scmdata=keep;name=agl-repo \
     git://git@gitpct.epam.com/epmd-aepr/img-proprietary;protocol=ssh;branch=master;name=img-proprietary;destsuffix=repo/proprietary \
+    git://github.com/madisongh/meta-golang.git;protocol=https;destsuffix=repo/meta-golang;branch=rocko;name=metago \
+    git://git@gitpct.epam.com/epmd-aepr/meta-aos.git;protocol=ssh;branch=master;destsuffix=repo/meta-aos \
     file://0001-Do-not-try-to-use-XDG-environment-while-setting-up.patch \
 "
 GLES_VERSION_rcar = "1.9"
@@ -82,6 +87,9 @@ configure_versions_rcar() {
         base_add_conf_value ${local_conf} BBMASK "meta-renesas/meta-rcar-gen3/recipes-graphics/gles-module/"
         xt_unpack_proprietary
     fi
+
+    # Disable shared link for GO packages
+    base_set_conf_value ${local_conf} GO_LINKSHARED ""
 
     # FIXME: normally bitbake fails with error if there are bbappends w/o recipes
     # which is the case for agl-demo-platform's recipe-platform while building
