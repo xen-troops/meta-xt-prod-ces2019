@@ -57,4 +57,7 @@ BBMASK .= "|meta-virtualization/recipes-containers/docker"
 # remove OMX and dependecies
 BBMASK .= "|kernel-module-uvcs-drv|omx-user-module|gstreamer1.0-omx"
 
+# Provide own pulseaudio configuration
+BBMASK .= "|meta-audio-4a-framework/recipes-multimedia/pulseaudio/pulseaudio_%.bbappend"
+
 OSTREE_BOOTLOADER ?= "u-boot"
