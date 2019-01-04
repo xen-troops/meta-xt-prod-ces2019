@@ -1,20 +1,17 @@
-SRCREV = "${AUTOREV}"
 DESCRIPTION = "AGL surface switcher"
-SECTION = "extras"
-LICENSE = "GPLv2"
-PR = "r0"
+SECTION     = "apps"
 
-PN = "aglsurfaceswitcher"
-PV = "0.1"
-
-SRC_URI = "git://github.com/xen-troops/agl_surface_switcher.git;protocol=https;branch=ces2018"
-
+LICENSE     = "GPLv2"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=a23a74b3f4caf9616230789d94217acb"
 
-S = "${WORKDIR}/git"
+SRC_URI = "git://github.com/xen-troops/agl_surface_switcher.git;protocol=https"
+SRCREV  = "${AUTOREV}"
 
-EXTRA_OECMAKE = "-DWITH_WGT=ON -DCMAKE_BUILD_TYPE=Release"
+PV = "1.0+git${SRCPV}"
+S  = "${WORKDIR}/git"
 
-DEPENDS = "libxenbe wayland-ivi-extension dbus-cpp git-native"
+# build-time dependencies
+DEPENDS += "libqtappfw qtquickcontrols2"
+DEPENDS += "libhomescreen qlibwindowmanager"
 
-inherit pkgconfig cmake aglwgt
+inherit qmake5 aglwgt
