@@ -60,4 +60,8 @@ BBMASK .= "|kernel-module-uvcs-drv|omx-user-module|gstreamer1.0-omx"
 # Provide own pulseaudio configuration
 BBMASK .= "|meta-audio-4a-framework/recipes-multimedia/pulseaudio/pulseaudio_%.bbappend"
 
+# Provide own ALSA configuration
+BBMASK .= "|meta-rcar-gen3/recipes-bsp/alsa-state/alsa-state.bbappend"
+
+
 OSTREE_BOOTLOADER ?= "u-boot"
