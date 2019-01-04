@@ -1,0 +1,40 @@
+From 2d0f8d33749bb728fae257d158959fa66705b164 Mon Sep 17 00:00:00 2001
+From: Oleksandr Grytsov <oleksandr_grytsov@epam.com>
+Date: Fri, 4 Jan 2019 23:05:03 +0200
+Subject: [PATCH] Add android role
+
+Signed-off-by: Oleksandr Grytsov <oleksandr_grytsov@epam.com>
+---
+ layers.json                | 2 +-
+ policy_manager/db/roles.db | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/layers.json b/layers.json
+index fddd258..1916bef 100644
+--- a/layers.json
++++ b/layers.json
+@@ -20,7 +20,7 @@
+          "comment": "FarHomeScreen is the part of HomeScreen. The z order of this layer is lower than NearHomeScreen"
+       },
+       {
+-         "role": "music|video|browser|radio|phone|map|hvac|settings|dashboard|poi|mixer|sdl|launcher|fallback",
++         "role": "music|video|browser|radio|phone|map|hvac|settings|dashboard|poi|mixer|sdl|launcher|fallback|android",
+          "name": "Apps",
+          "layer_id": 1001,
+          "comment": "Range of IDs that will always be placed on layer 1001"
+diff --git a/policy_manager/db/roles.db b/policy_manager/db/roles.db
+index 5d31aea..e7f8e87 100644
+--- a/policy_manager/db/roles.db
++++ b/policy_manager/db/roles.db
+@@ -8,7 +8,7 @@
+     },
+     {
+         "category": "debug",
+-        "role": "launcher | map | poi | browser | sdl | mixer | radio | hvac | debug | phone | video | music | settings | dashboard | fallback",
++        "role": "launcher | map | poi | browser | sdl | mixer | radio | hvac | debug | phone | video | music | settings | dashboard | fallback | android",
+         "area": "normal.full | split.main | split.sub | fullscreen",
+         "layer": "apps",
+     },
+-- 
+2.17.1
+
