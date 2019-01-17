@@ -34,7 +34,11 @@ PREFERRED_VERSION_gstreamer1.0-plugins-good = "1.12.2"
 PREFERRED_VERSION_gstreamer1.0-plugins-ugly = "1.12.2"
 PREFERRED_VERSION_gstreamer1.0-plugins-vspfilter = "1.0%"
 
-#MACHINE_FEATURES_append = " multimedia"
+# Enable Multimedia features
+MACHINE_FEATURES_append = " multimedia"
+
+# for weston v4l2 renderer
+DISTRO_FEATURES_append = " v4l2-renderer"
 
 #DISTRO_FEATURES_append = " use_eva_pkg"
 
