@@ -12,7 +12,10 @@ python __anonymous () {
         d.appendVar("EXTRA_OECONF", " --enable-ivi-shell")
 }
 
-SRC_URI_append = "file://weston-seats.rules"
+SRC_URI_append = "\
+    file://weston-seats.rules \
+    file://0001-v4l2-renderer-Release-dma-buf-when-attaching-null-bu.patch \
+"
 
 FILES_${PN} += " \
     ${sysconfdir}/udev/rules.d/weston-seats.rules \
