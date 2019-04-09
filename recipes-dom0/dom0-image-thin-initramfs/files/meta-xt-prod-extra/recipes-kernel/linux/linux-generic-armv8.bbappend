@@ -1,7 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 BRANCH = "master"
-SRCREV = "${AUTOREV}"
+SRCREV = "7794f75ca7eba6cd6f19b80f8a45bc18fe3230d1"
 LINUX_VERSION = "4.14.35"
 
 SRC_URI = " \
